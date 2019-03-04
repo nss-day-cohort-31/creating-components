@@ -74,78 +74,97 @@ const students = [
       score: 95
   }
 ]
-
-// const container = document.querySelector("#container");
-
-// container.innerHTML = "<div class='student'><h1>Alejandro Font</h1><section>Day cohort 27</section><aside>Wore pants that were too short for his legs.Routinely showed up late. Was an incredible friend to his teammates.</aside></div>";
-
-
-// Refactored the above code so that we have a function that can be called as many times as needed. 
-// const createStudentComponent = () => {
+// This function returns a string that contains HTML.
+// const createStudentComponent = (name, subject, info, className) => {
+//   console.log("function args", name, subject, info, className)
 //   return `
-//       <div class="student">
-//           <h1>Alejandro Font</h1>
-//           <section>Day cohort 27</section>
-//           <aside>
-//               Wore pants that were too short for his legs.
-//               Was an incredible friend to his teammates.
-//           </aside>
-//       </div>
-//   `
-// }
-
-// Refactoring the function so that the name in the string can be passed in as an argument.
-// const createStudentComponent = (name) => {
-//   return `
-//       <div class="student">
+//       <div class="student ${className}">
 //           <h1>${name}</h1>
-//           <section>Day cohort 27</section>
-//           <aside>
-//               Wore pants that were too short for his legs.
-//               Was an incredible friend to his teammates.
-//           </aside>
+//           <section>${subject}</section>
+//           <aside>${info}</aside>
 //       </div>
 //   `
 // }
 
-// Refactoring again so that now the function returns a string with HTML with the values for name, subject, info and className that is specified as arguments.
 const createStudentComponent = (name, subject, info, className) => {
-  console.log("function args", name, subject, info, className)
-  return `
-      <div class="student ${className}">
-          <h1>${name}</h1>
-          <section>${subject}</section>
-          <aside>${info}</aside>
-      </div>
-  `
-}
+  let studentDiv = document.createElement("div")
+  // <div></div>
+  studentDiv.classList.add(className)
+  // <div class="[the value in the variable className]"></div>
 
-// container.innerHTML = createStudentComponent("Chris Miller", "History", "Failed last exam")
-// debugger
-// container.innerHTML = container.innerHTML + createStudentComponent("Alejandro Font")
-// container.innerHTML += createStudentComponent("Alejandro Font", "Science", "Wore pants that were too short for his legs.Was an incredible friend to his teammates.")
+  let studentH1 = document.createElement("h1")
+  // <h1></h1>
+  studentH1.textContent = name
+  // <h1>[value of name]</h1>
+
+  let studentSection = document.createElement("section")
+  // <section></section>
+
+  // studentSection.innerHTML = `<p>${subject}</p>`
+  let studentP = document.createElement("p")
+
+  // You can use either .textContent or .createTextNode to add text to between the opening and closing tags of an HTML element. With .createTextNode, you will have to append the text node to the html element.
+  studentP.textContent= subject
+  // OR
+  // let pText = document.createTextNode(subject)
+  // studentP.appendChild(pText)
+  // studentSection.appendChild(studentP)
+  // <section>[value of subject]</section>
+
+  let studentAside = document.createElement("aside")
+  // <aside></aside>
+  studentAside.textContent = info
+  // <aside>[value of info]</aside>
+
+  // debugger
+  studentDiv.appendChild(studentH1)
+//  <div class="[className]">
+//    <h1>[name]</h1>
+//  </div>
+
+  studentDiv.appendChild(studentSection)
+//  <div class="[className]">
+//    <h1>[name]</h1>
+//    <section>[subject]</section>
+//  </div>
+
+  studentDiv.appendChild(studentAside)
+//  <div class="[className]">
+//    <h1>[name]</h1>
+//    <section>[subject]</section>
+//    <aside>[info]</aside>
+//  </div>
+
+  console.log(studentDiv)
+  return studentDiv
+}
 
 const studentContainer = document.querySelector("#container")
 
-
+const domBody = document.querySelector("body")
 for (let i = 0; i < students.length; i++) {
-    // const student = students[i]
+    const student = students[i]
 
     if (students[i].score >= 70) {
-      studentContainer.innerHTML += createStudentComponent(
-        students[i].name,
-        students[i].subject,
-        students[i].info,
+      let currentStudentDiv = createStudentComponent(
+        student.name,
+        student.subject,
+        student.info,
         "passing"
     )
+      studentContainer.appendChild(currentStudentDiv)
     } else {
-      studentContainer.innerHTML += createStudentComponent(
-        students[i].name,
-        students[i].subject,
-        students[i].info,
+      studentContainer.appendChild(createStudentComponent(
+        student.name,
+        student.subject,
+        student.info,
         "failing"
-    )
+    ))
     }
     
 }
+
+// Because the HTML I build is not appended to the DOM until the for loop runs, if I move the following two lines of code anywhere above the for loop, the querySelector will return null because the paragraph does not exist on the DOM until it has been appended.
+const paragraphRef = document.querySelector("p")
+console.log("paragraph", paragraphRef)
   
